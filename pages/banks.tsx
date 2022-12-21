@@ -83,24 +83,32 @@ export default function BanksPage({ banks, districts }: { banks: AccreditedBanks
 
 export const getStaticProps: GetStaticProps = async () => {
 
-    const { data: { banksByDistrict }} = await client.query({
-        query: GET_BANKS_BY_RDO,
-        variables: {
-            district: 29
-        }
-    })
-
-    const { data: { allDistricts }} = await client.query({
-        query: GET_ALL_DISTRICTS,
-        variables: {
-            district: 29
-        }
-    })
+    try {
+        const { data: { banksByDistrict }} = await client.query({
+            query: GET_BANKS_BY_RDO,
+            variables: {
+                district: 29
+            }
+        })
     
-    return {
-        props: {
-            banks: banksByDistrict,
-            districts: allDistricts
+        const { data: { allDistricts }} = await client.query({
+            query: GET_ALL_DISTRICTS,
+            variables: {
+                district: 29
+            }
+        })
+        
+        return {
+            props: {
+                banks: banksByDistrict,
+                districts: allDistricts
+            }
+        }
+    } catch (err) {
+        console.log(err)
+
+        return {
+            notFound: true
         }
     }
 }
