@@ -9,7 +9,7 @@ import theme from 'src/theme';
 import createEmotionCache from 'src/createEmotionCache';
 
 import { ApolloProvider } from "@apollo/client";
-import client from 'src/apollo';
+import client from 'src/apollo/client';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();

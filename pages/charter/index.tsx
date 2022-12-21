@@ -17,7 +17,7 @@ import { CharterResults } from 'src/sections/charter';
 import client from 'src/apollo';
 import { SEARCH_CHARTER, GET_ALL_CHARTER } from 'src/apollo/charter';
 import { Charter } from 'src/apollo/charter/types';
-
+import axios from 'axios';
 
 export default function SearchPage({ query, charters }: { query?: string, charters: Charter[] }) {
     return (
@@ -37,35 +37,69 @@ export default function SearchPage({ query, charters }: { query?: string, charte
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+    try {
+        // if there is no search query
+        if (!query.search) {
+            const { data: { allCharter }} = await client.query({
+                query: GET_ALL_CHARTER,
+                variables: {
+                    limit: 25
+                }
+            })
 
-    // if there is no search query
-    if (!query.search) {
-        const { data: { allCharter }} = await client.query({
-            query: GET_ALL_CHARTER,
+            return {
+                props: {
+                    charters: allCharter
+                }
+            }
+        }
+
+        // if there is a search query
+        const { data: { searchCharter }} = await client.query({
+            query: SEARCH_CHARTER,
             variables: {
-                limit: 25
+                search: query.search.toString()
             }
         })
-
+        
         return {
             props: {
-                charters: allCharter
+                query: query.search.toString(),
+                charters: searchCharter
             }
         }
-    }
+    } catch(err) {
+        const response = await axios.post('http://rrmanila.nat911.com/graphql', {
+              query: `
+                query AllOffices {
+                    allOffices {
+                        id
+                        name
+                        address
+                        email
+                        district {
+                            number
+                        }
+                        directory {
+                            name
+                            position
+                            contacts {
+                                number
+                                contactType
+                            }
+                        }
+                    }
+                }
+                `
+        }, {
+            method: "POST"
+        })         
 
-    // if there is a search query
-    const { data: { searchCharter }} = await client.query({
-        query: SEARCH_CHARTER,
-        variables: {
-            search: query.search.toString()
-        }
-    })
-    
-    return {
-        props: {
-            query: query.search.toString(),
-            charters: searchCharter
+        console.log(response.data);
+
+        return {
+            notFound: true
         }
     }
+    
 }
