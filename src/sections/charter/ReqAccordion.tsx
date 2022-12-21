@@ -52,7 +52,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }));
 
 export default function RequirementAccordion({ applicants }: { applicants: Applicants[] }) {
-    const [expanded, setExpanded] = useState<string | false>(applicants[0].name);
+    const [expanded, setExpanded] = useState<string | false>(false);
 
     const handleChange = (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
         setExpanded(newExpanded ? panel : false);

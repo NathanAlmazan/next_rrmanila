@@ -37,69 +37,34 @@ export default function SearchPage({ query, charters }: { query?: string, charte
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-    try {
-        // if there is no search query
-        if (!query.search) {
-            const { data: { allCharter }} = await client.query({
-                query: GET_ALL_CHARTER,
-                variables: {
-                    limit: 25
-                }
-            })
-
-            return {
-                props: {
-                    charters: allCharter
-                }
-            }
-        }
-
-        // if there is a search query
-        const { data: { searchCharter }} = await client.query({
-            query: SEARCH_CHARTER,
+   // if there is no search query
+    if (!query.search) {
+        const { data: { allCharter }} = await client.query({
+            query: GET_ALL_CHARTER,
             variables: {
-                search: query.search.toString()
+                limit: 25
             }
         })
-        
+
         return {
             props: {
-                query: query.search.toString(),
-                charters: searchCharter
+                charters: allCharter
             }
         }
-    } catch(err) {
-        const response = await axios.post('http://rrmanila.nat911.com/graphql', {
-              query: `
-                query AllOffices {
-                    allOffices {
-                        id
-                        name
-                        address
-                        email
-                        district {
-                            number
-                        }
-                        directory {
-                            name
-                            position
-                            contacts {
-                                number
-                                contactType
-                            }
-                        }
-                    }
-                }
-                `
-        }, {
-            method: "POST"
-        })         
+    }
 
-        console.log(response.data);
-
-        return {
-            notFound: true
+    // if there is a search query
+    const { data: { searchCharter }} = await client.query({
+        query: SEARCH_CHARTER,
+        variables: {
+            search: query.search.toString()
+        }
+    })
+    
+    return {
+        props: {
+            query: query.search.toString(),
+            charters: searchCharter
         }
     }
-    
 }

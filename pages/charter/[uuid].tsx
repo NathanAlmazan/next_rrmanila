@@ -100,33 +100,35 @@ export default function CharterPage({ charter }: { charter: Charter }) {
                             <Typography component="div" variant="h2" sx={{ fontWeight: 800 }}>
                                 {`Application Process (${step + 1} of ${charter.process.length})`}
                             </Typography>
-                            <Stack direction="row" alignItems="center" spacing={2} sx={{ my: 5 }}>
+                            {charter.process.length > 1 && (
+                                <Stack direction="row" alignItems="center" spacing={2} sx={{ my: 5 }}>
 
-                                {/* Backward Button */}
-                                <IconButton size='large' onClick={handleClickBack} disabled={step === 0}>
-                                    <ArrowBackIosIcon />
-                                </IconButton>
+                                    {/* Backward Button */}
+                                    <IconButton size='large' onClick={handleClickBack} disabled={step === 0}>
+                                        <ArrowBackIosIcon />
+                                    </IconButton>
 
-                                <AnimatePresence mode="wait">
-                                    <motion.div
-                                        key={step}
-                                        initial={{ x: 50, opacity: 0 }}
-                                        animate={{ x: 0, opacity: 1 }}
-                                        exit={{ x: -50, opacity: 0 }}
-                                        style={{ width: '100%' }}
-                                    >
-                                        <ProcessCard 
-                                            key={charter.process[step].step} 
-                                            process={charter.process[step]} 
-                                        />
-                                    </motion.div>
-                                </AnimatePresence>
+                                    <AnimatePresence mode="wait">
+                                        <motion.div
+                                            key={step}
+                                            initial={{ x: 50, opacity: 0 }}
+                                            animate={{ x: 0, opacity: 1 }}
+                                            exit={{ x: -50, opacity: 0 }}
+                                            style={{ width: '100%' }}
+                                        >
+                                            <ProcessCard 
+                                                key={charter.process[step].step} 
+                                                process={charter.process[step]} 
+                                            />
+                                        </motion.div>
+                                    </AnimatePresence>
 
-                                {/* Forward Button */}
-                                <IconButton onClick={handleClickForward} disabled={step === charter.process.length - 1}>
-                                    <ArrowForwardIosIcon />
-                                </IconButton>
-                            </Stack>
+                                    {/* Forward Button */}
+                                    <IconButton onClick={handleClickForward} disabled={step === charter.process.length - 1}>
+                                        <ArrowForwardIosIcon />
+                                    </IconButton>
+                                </Stack>
+                            )}
                         </div>
                     </Stack>
                 </Card>
